@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Scanning System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #3a3f45, #cf5c04); /* Gradient background */
+            color: #333; /* Text color */
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-left: 150px;
+            color: #fff; /* Heading color */
+        }
+
+        form {
+            background-color: #fff; /* Form background color */
+            padding: 20px;
+            height: 150px;
+            width: 470px;
+            margin-left: 75px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  /* Box shadow effect */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            margin-right: 100px;
+            color: #555; /* Label color */
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 95%;
+            padding: 10px;
+            margin: center;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus {
+            border-color: #ff7e5f; /* Border color on focus */
+        }
+
+        input[type="submit"] {
+            background-color: #f23708; /* Button background color */
+            color: #fff; /* Button text color */
+            padding: 10px 20px;
+            border: none;
+            margin-left: 35%;
+            width: 180px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #ff6b4a; /* Button background color on hover */
+        }
+
+
+        .image-container {
+            margin-top: 80px;
+            text-align: center;
+            height: 150px;
+            width: 700px;
+            border-radius: 5px;
+            
+
+        }
+        .image-container img {
+            max-width: 100%;
+            height: 310px;
+            width: 510px;
+            border-radius: 8px;
+            margin-left: 75px;
+        }
+        .container {
+            width: 50%;
+            float: right;
+            padding: 20px; 
+            margin-top: -440px;
+            color: #fff;
+            /* Optional: Add padding for spacing */
+        }
+        .container h1, .container p {
+            margin: 0; /* Remove default margin */
+        }
+
+
+
+    </style>
+
+</head>
+
+
+
+<body>
+    <h1>Food Scaning System</h1>
+    <form action="/scan" method="post" enctype="multipart/form-data">
+        <label for="input_text">Input Prompt</label>
+        <input type="text" id="input_text" name="input_text"><br><br>
+        <input type="file" id="image" name="image" accept="image"><br><br>
+        <input type="submit" value="Scan">
+    </form>
+
+    <div class="image-container" id="image-container"></div>
+    <script>
+       // Retrieve the image URL from sessionStorage when the page loads
+window.addEventListener('load', function() {
+    const imageUrl = sessionStorage.getItem('imageURL');
+    if (imageUrl) {
+        const imageContainer = document.getElementById('image-container');
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.style.display = 'block';
+        imageContainer.appendChild(img);
+    }
+});
+
+document.getElementById('image').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const imageContainer = document.getElementById('image-container');
+    imageContainer.innerHTML = ''; // Clear previous image if any
+
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.style.display = 'block';
+    sessionStorage.setItem('imageURL', img.src); // Store the image URL in sessionStorage
+    imageContainer.appendChild(img);
+});
+
+        
+    </script>
+    <div class="container">
+        
+        <div class="right-column">
+            <h1>Scanned Report of Given Food Image is Below</h1>
+            <p>{{response}}</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
+    
+   <!-- <div class="container">
+        <div class="left-column">
+            <h1>Scan Report</h1>
+        </div>
+        <div class="right-column">
+            <h1>Scan Report</h1>
+            <p>{{response}}</p>
+        </div>
+    </div>-->
+</body>
+</html>
