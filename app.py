@@ -10,7 +10,7 @@ app = Flask(__name__)
 load_dotenv()
 
 # Configure Gemini API
-genai.configure(api_key='AIzaSyDBASnR-yhLFi9n_aZvXrrI54s3zvVTOjI')
+genai.configure(api_key='Give Your API_key')
 model = genai.GenerativeModel('gemini-pro-vision')
 
 @app.route('/')
