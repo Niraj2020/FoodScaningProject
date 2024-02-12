@@ -20,41 +20,51 @@ def index():
 @app.route('/scan', methods=['POST'])
 def scan():
     input_prompt = """
-    You are an expert in indentify different types of food in images,
+    You are an expert in identifying different types of food in images.
     The system should accurately detect and label various foods displayed in the image, providing the name 
     of the food and its location within the image (e.g., bottom left, right corner, etc.). Additionally, 
     the system should extract nutritional information and categorize the type of food (e.g., fruits, vegetables, grains, etc.) 
     based on the detected items. The output should include a comprehensive report or display showing the
     identified foods, their positions, names, and corresponding nutritional details, and also calculate total of corresponding nutritional details.
-    also suggest me wheater the food is healthy or not-healthy.
+    Also, suggest whether the food is healthy or not-healthy.
+    Additionally, write a short note on that image.
     """
 
     input_text = request.form.get('input_text')
     image_file = request.files['image']
 
-    # Process the image
-    if image_file:
-        image = Image.open(image_file)
-        image_data = input_image_details(image_file)
-        response = get_gemini_response(input_prompt, image_data, input_text)
-        return render_template('result.html', response=response)
-    else:
-        return 'No image uploaded'
+    try:
+        # Process the image
+        if image_file:
+            image = Image.open(image_file)
+            image_data = input_image_details(image_file)
+            response = get_gemini_response(input_prompt, image_data, input_text)
+            return render_template('result.html', response=response)
+        else:
+            return 'No image uploaded', 400
+    except Exception as e:
+        return f"Error processing image: {str(e)}", 500
 
 def input_image_details(upload_file):
-    if upload_file is not None:
-        bytes_data = upload_file.getvalue()
-        image_parts = [{    
-            "mime_type": upload_file.mimetype,
-            "data": bytes_data
-        }]
-        return image_parts
-    else:
-        raise FileNotFoundError("No file uploaded")
+    try:
+        if upload_file is not None:
+            bytes_data = upload_file.getvalue()
+            image_parts = [{    
+                "mime_type": upload_file.mimetype,
+                "data": bytes_data
+            }]
+            return image_parts
+        else:
+            raise FileNotFoundError("No file uploaded")
+    except Exception as e:
+        raise e
 
 def get_gemini_response(input_prompt, image, prompt):
-    response = model.generate_content([input_prompt, image[0], prompt])
-    return response.text
+    try:
+        response = model.generate_content([input_prompt, image[0], prompt])
+        return response.text
+    except Exception as e:
+        return f"Error fetching Gemini response: {str(e)}"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
